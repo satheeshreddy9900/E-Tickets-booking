@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - eTickets</title>
+    <title>@ViewData["Title"] - E-Movies</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
@@ -12,6 +12,20 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
+                <div class="col-sm">
+                    <div class="btn-group dropright translate">
+                        <button id="langSel" type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Translate to
+                        </button>
+                        <div class="dropdown-menu translate-option">
+                            <a class="dropdown-item" href="#" tolang="en">English (default)</a>
+                            <a class="dropdown-item" href="#" tolang="it">Italian</a>
+                            <a class="dropdown-item" href="#" tolang="es">Spanish</a>
+                            <a class="dropdown-item" href="#" tolang="de">German</a>
+                        </div>
+                        </div>
+                        </div>
+
                 <a class="navbar-brand" asp-controller="Movies" asp-action="Index">eTickets</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -63,14 +77,87 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2024 - eTickets
+            &copy; 2024 - eTickets.com
         </div>
     </footer>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $(".dropdown-item").click(function (e) {
+
+            });
+        });
+
+    </script>
+    <script>
+        $.ajax({
+
+
+            var settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": "https://google-translate1.p.rapidapi.com/language/translate/v2",
+            "method": "GET",
+            "headers": {
+                'content-type': "application/x-www-form-urlencoded",
+                "x-rapidapi-host": "google-translate1.p.rapidapi.com",
+                "x-rapidapi-key": "a23682bbc3mshe880376a23bcc5bp1471dcjsn2e1a866b22ba",
+                "content-type": "application/x-www-form-urlencoded"
+            },
+            "data": {
+                "source": "en"
+                
+            }
+                     success: function (data) {
+                    let x = JSON.stringify(data);
+                    console.log(x);
+                },
+
+                // Error handling
+                error: function (error) {
+                    console.log(`Error ${error}`);
+                }
+            });
+
+        });
+
+
+        function fetchTranslation() {
+
+            $.ajax(settings).done(function (response) {
+
+                console.log(response);
+
+                var translatedText = response.data.translations[0].translatedText;
+
+                updatePlaceholders(translatedText);
+
+
+            });
+
+        }
+        function updatePlaceholders(updateString) {
+
+            var comp = updateString.split('|')
+
+            $('form > input').each(function (idx) {
+
+                $(this).prop("placeholder", comp[idx + 1].trim());
+
+            });
+
+            $("#formHeading").html(comp[0]);
+
+        }
+
+    </script>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
